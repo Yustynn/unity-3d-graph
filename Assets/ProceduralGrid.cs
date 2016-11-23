@@ -51,7 +51,7 @@ public class ProceduralGrid : MonoBehaviour {
                 float denominator = (x * y + 1);
                 if (denominator == 0) denominator = 0.000001f; // we can't divide by 0! Just for sanity
                 float z = numerator / denominator;
-                // vertices[v] = new Vector3(x * cellSize - vertexOffset, y * cellSize - vertexOffset, x / (y+1)); // rand z fn for now
+
                 vertices[v] = new Vector3(x, z, y) - vertexOffset; // rand z fn for now, and yes, x,z,y
                 v++;
             }

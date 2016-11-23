@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// for now, I've conflated rotation and movement a bit (temporary)
-
 public class MoveWithHand : MonoBehaviour {
 
     public GameObject palm;
-    public float speed = 10;
+    public float speed = 200;
 
     Vector3 palmInitPos;
     bool shouldMove;
@@ -16,13 +14,15 @@ public class MoveWithHand : MonoBehaviour {
         shouldMove = false;
     }
 
-	// Use this for initialization
+	float GenerateMovementCoordinate(float c)
+    {
+        return c * Mathf.Abs(c) * Time.deltaTime * speed;
+    }
 	Vector3 GenerateMovementVector () {
-
         Vector3 diff = palm.transform.position - palmInitPos;
-        diff.x = -diff.x * Time.deltaTime * speed;
-        diff.y = diff.y * Time.deltaTime * speed;
-        diff.z = -diff.z * Time.deltaTime * speed;
+        diff.x = -GenerateMovementCoordinate(diff.x);
+        diff.y =  GenerateMovementCoordinate(diff.y);
+        diff.z = -GenerateMovementCoordinate(diff.z);
 
         return diff;
     }

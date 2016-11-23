@@ -12,13 +12,14 @@ public class ProceduralGrid : MonoBehaviour {
     int[] triangles;
 
     // grid config
-    public float cellSize = 1;
+    public int cellsPerUnit = 1;
     public Vector3 gridOffset = new Vector3(0,0,0);
-    public int gridSize = 10;
+    public int sizeX = 10;
+    public int sizeY = 10;
 
 	// Use this for initialization
 	void Awake () {
-        mesh = GetComponent<MeshFilter>().mesh;
+        mesh = GetComponent<MeshFilter>().mesh; // aww yisss Awake > Start for variable value initialization
 	}
 
     void Start()
@@ -29,43 +30,51 @@ public class ProceduralGrid : MonoBehaviour {
 	
     void MakeContiguousProceduralGrid()
     {
-        vertices = new Vector3[(gridSize + 1) * (gridSize + 1)];
-        triangles = new int[gridSize * gridSize * 6];
+        vertices = new Vector3[(sizeX + 1) * cellsPerUnit * (sizeY + 1) * cellsPerUnit];
+        triangles = new int[sizeX * cellsPerUnit * sizeY * cellsPerUnit * 6];
 
         // tracker ints
         int v = 0, t = 0; // v == y of first nested for-loop, but this is clearer!
-
-        float vertexOffset = cellSize * 0.5f; // turns out multiplication is cheaper than division
+        
+        // some calculations
+        float cellSize = 1 / (float)cellsPerUnit;
+        Vector3 vertexOffset = new Vector3((float)sizeX * 0.5f, 0, (float)sizeX * 0.5f); // turns out multiplication is cheaper than division
+        int numCellsX = sizeX * cellsPerUnit;
+        int numCellsY = sizeY * cellsPerUnit;
 
         // <= because we need the edge vertices at the end of the grid (so gridsize + 1)
-        for (int x = 0; x <= gridSize; x++)
+        for (float x = 0; x <= sizeX; x += cellSize)
         {
-            for (int y = 0; y <= gridSize; y++)
+            for (float y = 0; y <= sizeY; y += cellSize)
             {
+                float numerator = y * y + x * x;
+                float denominator = (x * y + 1);
+                if (denominator == 0) denominator = 0.000001f; // we can't divide by 0! Just for sanity
+                float z = numerator / denominator;
                 // vertices[v] = new Vector3(x * cellSize - vertexOffset, y * cellSize - vertexOffset, x / (y+1)); // rand z fn for now
-                vertices[v] = new Vector3(x * cellSize - vertexOffset, (y*y + x*x) / (x * y + 1), y * cellSize - vertexOffset); // rand z fn for now
+                vertices[v] = new Vector3(x, z, y) - vertexOffset; // rand z fn for now, and yes, x,z,y
                 v++;
             }
         }
 
-        v = 0; // #reset!
+        v = 0; // #reset for more looping!
 
-        for (int x = 0; x < gridSize; x++)
+        for (int x = 0; x < numCellsX; x++)
         {
-            for (int y = 0; y < gridSize; y++)
+            for (int y = 0; y < numCellsY; y++)
             {
                 triangles[t]   = v;
                 triangles[t+1] = v + 1;
-                triangles[t+2] = v + (gridSize + 1);
-                triangles[t+3] = v + (gridSize + 1);
+                triangles[t+2] = v + (numCellsX + 1);
+                triangles[t+3] = v + (numCellsX + 1);
                 triangles[t+4] = v + 1;
-                triangles[t+5] = (v + 1) + (gridSize + 1) ;
+                triangles[t+5] = (v + 1) + (numCellsX + 1) ;
 
                 v++;
                 t += 6;
             }
 
-            v++; // idrg why yet
+            v++; // idrg why yet, but something to do with the +1 to sizeX, sizeY
         }
     }
 

@@ -4,7 +4,7 @@ using System.Collections;
 public class MoveWithHand : MonoBehaviour {
 
     public GameObject palm;
-    public float speed = 200;
+    public float speed = 300;
 
     Vector3 palmInitPos;
     bool shouldMove;
@@ -20,9 +20,9 @@ public class MoveWithHand : MonoBehaviour {
     }
 	Vector3 GenerateMovementVector () {
         Vector3 diff = palm.transform.position - palmInitPos;
-        diff.x = -GenerateMovementCoordinate(diff.x);
-        diff.y =  GenerateMovementCoordinate(diff.y);
-        diff.z = -GenerateMovementCoordinate(diff.z);
+        diff.x = GenerateMovementCoordinate(diff.x);
+        diff.y = GenerateMovementCoordinate(diff.y);
+        diff.z = GenerateMovementCoordinate(diff.z);
 
         return diff;
     }
@@ -38,7 +38,7 @@ public class MoveWithHand : MonoBehaviour {
 
     public void ToggleMoveMode()
     {
-        palmInitPos = palm.transform.position;
+        palmInitPos = GameObject.Find("DataStore").GetComponent<InitPalmTransforms>().getInitPalmPos();
         shouldMove = !shouldMove;
 
         Debug.Log("Movement toggled!");

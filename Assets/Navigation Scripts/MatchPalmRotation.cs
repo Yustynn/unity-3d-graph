@@ -6,6 +6,7 @@ public class MatchPalmRotation : MonoBehaviour {
     public GameObject palm;
 
     bool shouldRotate;
+    public float rotationScale = 1.5f;
     Vector3 initCubeEuler, initPalmEulerRot;
 
 	// Use this for initialization
@@ -16,8 +17,17 @@ public class MatchPalmRotation : MonoBehaviour {
     public void ToggleRotationMode()
     {
         shouldRotate = !shouldRotate;
-        initPalmEulerRot = GameObject.Find("DataStore").GetComponent<InitPalmTransforms>().getInitPalmEulerRot();
+        initPalmEulerRot = palm.transform.rotation.eulerAngles;
         initCubeEuler = transform.rotation.eulerAngles;
+    }
+
+    Vector3 applyScale(Vector3 rotationVector)
+    {
+        rotationVector.x *= rotationScale;
+        rotationVector.y *= rotationScale;
+        rotationVector.z *= rotationScale;
+
+        return rotationVector;
     }
 	
 	// Update is called once per frame
@@ -25,7 +35,9 @@ public class MatchPalmRotation : MonoBehaviour {
         if (shouldRotate)
         {
             Vector3 diff = palm.transform.rotation.eulerAngles - initPalmEulerRot;
-            transform.rotation = Quaternion.Euler(initCubeEuler + diff);
+
+            diff = applyScale(diff);
+            transform.rotation = Quaternion.Euler(initCubeEuler - diff);
         }
 	}
 }

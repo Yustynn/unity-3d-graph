@@ -5,39 +5,32 @@ public class InitPalmTransforms : MonoBehaviour {
 
     public GameObject palm;
 
-    Vector3 initPalmPos, initPalmEulerRot, clearVector;
+    bool isMoving;
+    Vector3 initPalmPos, clearVector;
 
     void Awake()
     {
-        clearVector = new Vector3(9999, 9999, 9999);
-        initPalmPos = initPalmEulerRot = clearVector;
-    }
-    
-	public void SaveInfo () {
-	    if (initPalmPos == clearVector)
-        {
-            initPalmPos = palm.transform.position;
-            initPalmEulerRot = palm.transform.rotation.eulerAngles;
-
-            Debug.Log("Palm transform info saved!");
-        }
-	}
-
-    public void ClearInfo()
-    {
-        initPalmPos = initPalmEulerRot = clearVector;
-
-        Debug.Log("Palm transform info cleared!");
+        clearVector = initPalmPos = new Vector3(9999, 9999, 9999);
     }
 
-    public Vector3 getInitPalmPos()
+    void ClearIfNotMoving()
     {
+        if (!isMoving) initPalmPos = clearVector;
+    }
+
+    public Vector3 EnableIsMoving()
+    {
+        isMoving = true;
+
+        if (initPalmPos == clearVector) initPalmPos = palm.transform.position;
+
         return initPalmPos;
     }
 
-    public Vector3 getInitPalmEulerRot()
+    public void DisableIsMoving()
     {
-        return initPalmEulerRot;
-    }
+        isMoving = false;
 
+        Invoke("ClearIfNotMoving", 0.25f); // 0.25s delay
+    }
 }

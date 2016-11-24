@@ -18,8 +18,10 @@ public class MoveWithHand : MonoBehaviour {
     {
         return c * Mathf.Abs(c) * Time.deltaTime * speed;
     }
+
 	Vector3 GenerateMovementVector () {
         Vector3 diff = palm.transform.position - palmInitPos;
+        Debug.Log(palmInitPos);
         diff.x = GenerateMovementCoordinate(diff.x);
         diff.y = GenerateMovementCoordinate(diff.y);
         diff.z = GenerateMovementCoordinate(diff.z);
@@ -32,14 +34,22 @@ public class MoveWithHand : MonoBehaviour {
         if (shouldMove)
         {
             Vector3 currPos = transform.position;
-            transform.position = currPos + GenerateMovementVector();
+            transform.position = currPos - GenerateMovementVector();
         }
     }
 
     public void ToggleMoveMode()
     {
-        palmInitPos = GameObject.Find("DataStore").GetComponent<InitPalmTransforms>().getInitPalmPos();
         shouldMove = !shouldMove;
+
+        if (shouldMove)
+        {
+            palmInitPos = GameObject.Find("DataStore").GetComponent<InitPalmTransforms>().EnableIsMoving();
+        } else
+        {
+            GameObject.Find("DataStore").GetComponent<InitPalmTransforms>().DisableIsMoving();
+        }
+        
 
         Debug.Log("Movement toggled!");
     }

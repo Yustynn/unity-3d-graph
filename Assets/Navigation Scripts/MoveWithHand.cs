@@ -22,8 +22,12 @@ public class MoveWithHand : MonoBehaviour {
 	Vector3 GenerateMovementVector () {
         Vector3 diff = palm.transform.position - palmInitPos;
         Debug.Log(palmInitPos);
+        float x = diff.x,
+            y = diff.y,
+            z = diff.z;
+
         diff.x = GenerateMovementCoordinate(diff.x);
-        diff.y = GenerateMovementCoordinate(diff.y);
+        diff.y = -GenerateMovementCoordinate(diff.y);
         diff.z = GenerateMovementCoordinate(diff.z);
 
         return diff;

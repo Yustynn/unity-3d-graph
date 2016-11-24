@@ -19,6 +19,8 @@ public class MatchPalmRotation : MonoBehaviour {
         shouldRotate = !shouldRotate;
         initPalmEulerRot = palm.transform.rotation.eulerAngles;
         initCubeEuler = transform.rotation.eulerAngles;
+
+        Debug.Log("Rotation mode toggled!");
     }
 
     Vector3 applyScale(Vector3 rotationVector)

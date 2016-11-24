@@ -47,10 +47,10 @@ public class ProceduralGrid : MonoBehaviour {
         {
             for (float y = 0; y <= sizeY; y += cellSize)
             {
-                float numerator = y * y + x * x;
+             float numerator = y * y + x * x;
                 float denominator = (x * y + 1);
 
-                //float numerator = x * x + y * y * y - 6 * x * y;
+                //float numerator = x * x + x * y;
                 //float denominator = 1;
                 if (denominator == 0) denominator = 0.000001f; // we can't divide by 0! Just for sanity
                 float z = numerator / denominator;

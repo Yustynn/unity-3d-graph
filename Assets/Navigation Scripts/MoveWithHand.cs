@@ -6,7 +6,7 @@ public class MoveWithHand : MonoBehaviour {
     public GameObject palm;
     public float speed = 300;
 
-    Vector3 palmInitPos;
+    Vector3 palmInitPos, forward, right, up;
     bool shouldMove;
 
     void Awake ()
@@ -19,29 +19,34 @@ public class MoveWithHand : MonoBehaviour {
         return c * Mathf.Abs(c) * Time.deltaTime * speed;
     }
 
+    Vector3 adjustForDirection(Vector3 addVector)
+    {
+        Vector3 currPalmRot = transform.rotation.eulerAngles;
+
+        return addVector;
+    }
+
 	Vector3 GenerateMovementVector () {
         Vector3 diff = palm.transform.position - palmInitPos;
-        Debug.Log(palmInitPos);
-        float x = diff.x,
-            y = diff.y,
-            z = diff.z;
+        Vector3 movement = new Vector3(0, 0, 0);
 
-        diff.x = GenerateMovementCoordinate(diff.x);
-        diff.y = -GenerateMovementCoordinate(diff.y);
-        diff.z = GenerateMovementCoordinate(diff.z);
+        movement -= diff.x * right;
+        movement -= diff.y * up;
+        movement -= diff.z * forward;
 
-        return diff;
+        return movement * Time.deltaTime * speed;
     }
 
     void Move()
     {
         if (shouldMove)
         {
-            Vector3 currPos = transform.position;
+            Vector3 currPos = transform.localPosition;
             transform.position = currPos - GenerateMovementVector();
         }
     }
 
+    // also lets DataStore know what's up.
     public void ToggleMoveMode()
     {
         shouldMove = !shouldMove;
@@ -49,6 +54,9 @@ public class MoveWithHand : MonoBehaviour {
         if (shouldMove)
         {
             palmInitPos = GameObject.Find("DataStore").GetComponent<InitPalmTransforms>().EnableIsMoving();
+            forward = transform.forward;
+            right = transform.right;
+            up = transform.up;
         } else
         {
             GameObject.Find("DataStore").GetComponent<InitPalmTransforms>().DisableIsMoving();

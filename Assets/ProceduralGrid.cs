@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+using AK;
+
 // auto add MeshFilter, MeshRenderer if not present on object
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 
@@ -11,6 +13,9 @@ public class ProceduralGrid : MonoBehaviour {
     Vector3[] vertices;
     int[] triangles;
 
+    AK.ExpressionSolver solver;
+    AK.Expression zFn;
+
     // grid config
     public int cellsPerUnit = 1;
     public Vector3 gridOffset = new Vector3(0,0,0);
@@ -20,6 +25,9 @@ public class ProceduralGrid : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
         mesh = GetComponent<MeshFilter>().mesh; // aww yisss Awake > Start for variable value initialization
+
+        solver = GlobalDataStore.getSolver();
+        zFn = GlobalDataStore.getZFn();
 	}
 
     void Start()
@@ -47,15 +55,20 @@ public class ProceduralGrid : MonoBehaviour {
         {
             for (float y = 0; y <= sizeY; y += cellSize)
             {
-             float numerator = y * y + x * x;
-                float denominator = (x * y + 1);
+                solver.SetGlobalVariable("x", x);
+                solver.SetGlobalVariable("y", y);
 
-                //float numerator = x * x + x * y;
-                //float denominator = 1;
-                if (denominator == 0) denominator = 0.000001f; // we can't divide by 0! Just for sanity
-                float z = numerator / denominator;
+                float z = (float) zFn.Evaluate();
 
-                vertices[v] = new Vector3(x, z, y) - vertexOffset; // rand z fn for now, and yes, x,z,y
+                if ( float.IsPositiveInfinity(z) || float.IsNegativeInfinity(z) )
+                {
+                    vertices[v] = vertices[v - 1];
+                }
+                else
+                {
+                    vertices[v] = new Vector3(x, z, y) - vertexOffset; // yes, x,z,y
+                }
+
                 v++;
             }
         }

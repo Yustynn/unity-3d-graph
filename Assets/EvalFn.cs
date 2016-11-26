@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 using System.Text.RegularExpressions;
 using AK;
 
 public class EvalFn : MonoBehaviour {
-    B83ExpressionParser.Expression zFn;
     GameObject InputField;
 
     string[] depVars;
@@ -48,6 +47,11 @@ public class EvalFn : MonoBehaviour {
         setArgs(5, 10); 
 
         Debug.Log("Result: " + zFn.Evaluate());
+
+        GlobalDataStore.setSolver(solver);
+        GlobalDataStore.setZFn(zFn);
+
+        SceneManager.LoadScene("main");
     }
 
     void Start()
@@ -65,6 +69,7 @@ public class EvalFn : MonoBehaviour {
         foreach (string depVar in depVars)
         {
             solver.SetGlobalVariable(depVar, 0);
+            
         }
     }
 	

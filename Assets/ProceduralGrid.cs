@@ -28,6 +28,16 @@ public class ProceduralGrid : MonoBehaviour {
 
         solver = GlobalDataStore.getSolver();
         zFn = GlobalDataStore.getZFn();
+
+        // incase we start from "main" scene directly.
+        if (solver == null)
+        {
+            solver = new AK.ExpressionSolver();
+            solver.SetGlobalVariable("x", 0);
+            solver.SetGlobalVariable("y", 0);
+            zFn = solver.SymbolicateExpression("(x^2 + y^2) / (x*y+1)");
+
+        }
 	}
 
     void Start()

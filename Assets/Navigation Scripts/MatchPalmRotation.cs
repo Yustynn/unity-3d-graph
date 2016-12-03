@@ -7,6 +7,7 @@ public class MatchPalmRotation : MonoBehaviour {
 
     bool shouldRotate;
     public float rotationScale = 1.5f;
+    public bool isOppositeDirection;
     Vector3 initCubeEuler, initPalmEulerRot;
 
 	// Use this for initialization
@@ -39,6 +40,7 @@ public class MatchPalmRotation : MonoBehaviour {
             Vector3 diff = palm.transform.rotation.eulerAngles - initPalmEulerRot;
 
             diff = applyScale(diff);
+            if (isOppositeDirection) diff = -diff;
             transform.rotation = Quaternion.Euler(initCubeEuler - diff);
         }
 	}

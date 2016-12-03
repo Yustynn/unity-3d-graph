@@ -21,15 +21,17 @@ public class EvalFn : MonoBehaviour {
     }
 
 
-    // parser can't understand [constant]x etc. This turns it into [constant]*x, which it does understand.
-    // @TODO: Make it understand xy, yx, xx, yy, etc
+    // parser can't understand [constant]x etc. This turns it into [constant]*x
     string EnsafenFnString(string fnString)
     {
-
+        // recognize 5x, 12321y, etc
         foreach (string depVar in depVars)
         {
             fnString = Regex.Replace(fnString, @"(\d+)" + depVar, "$1*" + depVar);
         }
+        
+        // recognize xy
+        fnString = Regex.Replace(fnString, @"([xy])([xy])", "$1*$2");
 
 
         return fnString;

@@ -42,6 +42,7 @@ public class EvalFn : MonoBehaviour {
 
 
         string userInputFunction = InputField.GetComponent<InputField>().text;
+        if (userInputFunction.Length == 0) userInputFunction = "(x^2+y^2)/(xy)";
         userInputFunction = EnsafenFnString(userInputFunction); // make 5x -> 5*x, etc
 
         Expression zFn = solver.SymbolicateExpression(EnsafenFnString(userInputFunction));

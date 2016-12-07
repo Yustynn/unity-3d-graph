@@ -8,6 +8,7 @@ public class MatchPalmRotation : MonoBehaviour {
     bool shouldRotate;
     public float rotationScale = 1.5f;
     public bool isOppositeDirection;
+
     Vector3 initCubeEuler, initPalmEulerRot;
 
 	// Use this for initialization

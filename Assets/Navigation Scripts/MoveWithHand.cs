@@ -5,6 +5,7 @@ public class MoveWithHand : MonoBehaviour {
 
     public GameObject palm;
     public float speed = 300;
+    public bool isOppositeDirection = false, isInvertLeftRight = true;
 
     Vector3 palmInitPos, forward, right, up;
     bool shouldMove;
@@ -30,9 +31,13 @@ public class MoveWithHand : MonoBehaviour {
         Vector3 diff = palm.transform.position - palmInitPos;
         Vector3 movement = new Vector3(0, 0, 0);
 
+
+        if (isInvertLeftRight) diff.x *= -1;
+
         movement -= diff.x * right;
         movement -= diff.y * up;
         movement -= diff.z * forward;
+
 
         return movement * Time.deltaTime * speed;
     }
@@ -42,7 +47,11 @@ public class MoveWithHand : MonoBehaviour {
         if (shouldMove)
         {
             Vector3 currPos = transform.localPosition;
-            transform.position = currPos - GenerateMovementVector();
+            Vector3 movementVector = GenerateMovementVector();
+
+            if (isOppositeDirection) movementVector *= -1;
+
+            transform.position = currPos - movementVector;
         }
     }
 

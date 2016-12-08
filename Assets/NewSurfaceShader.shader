@@ -48,6 +48,12 @@
 
 	void surf(Input IN, inout SurfaceOutput o)
 	{	
+		float h;
+
+		h = (_Height1 - IN.worldPos.y) / (_Height1 - _HeightMin);
+		fixed4 tintColor = lerp(_Color1.rgba, _ColorMin.rgba, h);
+		o.Albedo = tintColor.rgb;
+		o.Alpha = 0.1;
 
 		if (IN.worldPos.y > _Height3)
 			o.Albedo = _Color3;
